@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/studentListFragment">
+
+    <fragment
+        android:id="@+id/studentListFragment"
+        android:name="mk.com.ukim.finki.mpip.lab4.view.StudentListFragment"
+        android:label="fragment_student_list"
+        tools:layout="@layout/fragment_student_list" >
+        <action
+            android:id="@+id/action_studentListFragment_to_studentFormFragment"
+            app:destination="@id/studentFormFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/studentFormFragment"
+        android:name="mk.com.ukim.finki.mpip.lab4.view.StudentFormFragment"
+        android:label="fragment_student_form"
+        tools:layout="@layout/fragment_student_form" >
+        <action
+            android:id="@+id/action_studentFormFragment_to_authFormFragment"
+            app:destination="@id/authFormFragment" />
+        <argument
+            android:name="studentEditId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/authFormFragment"
+        android:name="mk.com.ukim.finki.mpip.lab4.view.AuthFormFragment"
+        android:label="fragment_auth_form"
+        tools:layout="@layout/fragment_auth_form" />
+</navigation>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">lab4</string>
+    <string name="fab_icon">FAB Icon</string>
+    <string name="student_form_index">Index</string>
+    <string name="student_form_name">Name</string>
+    <string name="student_form_last_name">Last name</string>
+    <string name="student_form_phone_number">Phone number</string>
+    <string name="student_form_address">Address</string>
+    <string name="student_form_submit">Submit</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="student_item_name_text">%s %s</string>
+    <string name="add_student_button">Add student</string>
+    <string name="student_item_edit_button_text">Edit</string>
+    <string name="student_item_delete_button_text">Delete</string>
+</resources>
