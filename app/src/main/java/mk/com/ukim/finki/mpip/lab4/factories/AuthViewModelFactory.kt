@@ -1,8 +1,9 @@
-package mk.com.ukim.finki.mpip.lab4.viewmodel
+package mk.com.ukim.finki.mpip.lab4.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import mk.com.ukim.finki.mpip.lab4.repository.AuthRepository
+import mk.com.ukim.finki.mpip.lab4.viewmodel.AuthViewModel
 
 class AuthViewModelFactory(
     private val authRepository: AuthRepository

@@ -3,8 +3,8 @@ package mk.com.ukim.finki.mpip.lab4.util
 import android.content.Context
 import mk.com.ukim.finki.mpip.lab4.repository.AuthRepository
 import mk.com.ukim.finki.mpip.lab4.repository.StudentRepository
-import mk.com.ukim.finki.mpip.lab4.viewmodel.AuthViewModelFactory
-import mk.com.ukim.finki.mpip.lab4.viewmodel.StudentViewModelFactory
+import mk.com.ukim.finki.mpip.lab4.factories.AuthViewModelFactory
+import mk.com.ukim.finki.mpip.lab4.factories.StudentViewModelFactory
 
 object FactoryInjector {
     private fun getAuthRepository(ctx: Context): AuthRepository {
