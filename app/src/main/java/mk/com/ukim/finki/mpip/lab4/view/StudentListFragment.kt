@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mk.com.ukim.finki.mpip.lab4.adapter.StudentAdapter
 import mk.com.ukim.finki.mpip.lab4.databinding.FragmentStudentListBinding
 import mk.com.ukim.finki.mpip.lab4.model.Status
@@ -34,12 +35,13 @@ class StudentListFragment : Fragment() {
         return binding.root
     }
 
+    @ExperimentalCoroutinesApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         initFab()
         initRecycler(listOf())
-
+        studentViewModel.fetchStudentList()
         studentViewModel.getStudents().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> it.data?.let { data ->
@@ -56,8 +58,29 @@ class StudentListFragment : Fragment() {
                 }
             }
         })
+
+        studentViewModel.getRemoveStatus().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Toast.makeText(
+                        context,
+                        "Student successfully removed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                else -> {
+                    Toast.makeText(
+                        context,
+                        "ERROR",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 
+    @ExperimentalCoroutinesApi
     private fun initRecycler(studentList: List<Student>) {
         studentAdapter = StudentAdapter(
             studentList.toMutableList(),
@@ -94,6 +117,11 @@ class StudentListFragment : Fragment() {
             .actionStudentListFragmentToStudentFormFragment(studentEditId)
         Log.i(TAG, "redirectToEditForm: $studentEditId")
         findNavController().navigate(action)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        studentViewModel.getRemoveStatus()
     }
 
     companion object {

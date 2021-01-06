@@ -5,16 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mk.com.ukim.finki.mpip.lab4.databinding.FragmentStudentFormBinding
 import mk.com.ukim.finki.mpip.lab4.model.Status
 import mk.com.ukim.finki.mpip.lab4.model.Student
 import mk.com.ukim.finki.mpip.lab4.util.FactoryInjector
 import mk.com.ukim.finki.mpip.lab4.viewmodel.StudentViewModel
 
+@ExperimentalCoroutinesApi
 class StudentFormFragment : Fragment() {
 
     private lateinit var binding: FragmentStudentFormBinding
@@ -41,12 +44,10 @@ class StudentFormFragment : Fragment() {
             studentViewModel.fetchStudentDetails(it)
             binding.createUserButton.setOnClickListener {
                 studentViewModel.updateStudent(toStudent())
-                findNavController().popBackStack()
             }
         } ?: run {
             binding.createUserButton.setOnClickListener {
                 studentViewModel.createStudent(toStudent())
-                findNavController().popBackStack()
             }
         }
 
@@ -57,6 +58,38 @@ class StudentFormFragment : Fragment() {
                 }
 
                 else -> { // do nothing
+                }
+            }
+        })
+
+        studentViewModel.getCreateStatus().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    findNavController().popBackStack()
+                }
+
+                else -> {
+                    Toast.makeText(
+                        context,
+                        "ERROR",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+
+        studentViewModel.getUpdateStatus().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    findNavController().popBackStack()
+                }
+
+                else -> {
+                    Toast.makeText(
+                        context,
+                        "ERROR",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         })
