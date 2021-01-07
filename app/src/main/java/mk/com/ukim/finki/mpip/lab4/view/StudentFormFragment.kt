@@ -1,7 +1,6 @@
 package mk.com.ukim.finki.mpip.lab4.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,6 @@ class StudentFormFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStudentFormBinding.inflate(inflater, container, false)
-        Log.i(TAG, "onCreateView: here")
         return binding.root
     }
 
@@ -138,9 +136,5 @@ class StudentFormFragment : Fragment() {
             mobilePhone,
             address
         )
-    }
-
-    companion object {
-        private const val TAG = "StudentFormFragment"
     }
 }

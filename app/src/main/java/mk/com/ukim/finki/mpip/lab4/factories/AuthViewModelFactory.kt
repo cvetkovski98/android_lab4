@@ -7,7 +7,7 @@ import mk.com.ukim.finki.mpip.lab4.viewmodel.AuthViewModel
 
 class AuthViewModelFactory(
     private val authRepository: AuthRepository
-): ViewModelProvider.Factory {
+) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

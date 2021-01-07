@@ -73,8 +73,4 @@ class StudentViewModel(private val studentRepository: StudentRepository) : ViewM
             }
         }
     }
-
-    companion object {
-        private const val TAG = "StudentViewModel"
-    }
 }
