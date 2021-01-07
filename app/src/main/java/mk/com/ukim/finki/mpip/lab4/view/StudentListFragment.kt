@@ -1,12 +1,12 @@
 package mk.com.ukim.finki.mpip.lab4.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +16,7 @@ import mk.com.ukim.finki.mpip.lab4.databinding.FragmentStudentListBinding
 import mk.com.ukim.finki.mpip.lab4.model.Status
 import mk.com.ukim.finki.mpip.lab4.model.Student
 import mk.com.ukim.finki.mpip.lab4.util.FactoryInjector
+import mk.com.ukim.finki.mpip.lab4.viewmodel.AuthViewModel
 import mk.com.ukim.finki.mpip.lab4.viewmodel.StudentViewModel
 
 class StudentListFragment : Fragment() {
@@ -24,6 +25,9 @@ class StudentListFragment : Fragment() {
     private lateinit var studentAdapter: StudentAdapter
     private val studentViewModel: StudentViewModel by viewModels {
         FactoryInjector.getStudentViewModel()
+    }
+    private val authViewModel: AuthViewModel by activityViewModels {
+        FactoryInjector.getAuthViewModel()
     }
 
 
@@ -38,11 +42,11 @@ class StudentListFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         initFab()
         initRecycler(listOf())
+        authViewModel.fetchCurrentUser()
         studentViewModel.fetchStudentList()
-        studentViewModel.getStudents().observe(viewLifecycleOwner, {
+        studentViewModel.students.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> it.data?.let { data ->
                     updateAdapterData(data)
@@ -50,7 +54,7 @@ class StudentListFragment : Fragment() {
 
                 Status.ERROR -> Toast.makeText(
                     context,
-                    "There was an error fetching students",
+                    it.message,
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -59,28 +63,35 @@ class StudentListFragment : Fragment() {
             }
         })
 
-        studentViewModel.getRemoveStatus().observe(viewLifecycleOwner, {
+        studentViewModel.studentRemoveStatus.observe(viewLifecycleOwner, {
             when (it.status) {
-                Status.SUCCESS -> {
+                Status.ERROR -> {
                     Toast.makeText(
                         context,
-                        "Student successfully removed",
+                        it.message,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
                 else -> {
-                    Toast.makeText(
-                        context,
-                        "ERROR",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // do nothing
                 }
             }
         })
+
+        authViewModel.currentUser.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.ERROR -> {
+                    redirectToLogin()
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        })
+
     }
 
-    @ExperimentalCoroutinesApi
     private fun initRecycler(studentList: List<Student>) {
         studentAdapter = StudentAdapter(
             studentList.toMutableList(),
@@ -94,8 +105,6 @@ class StudentListFragment : Fragment() {
             adapter = studentAdapter
             layoutManager = llm
         }
-
-        Log.i(TAG, "onActivityCreated: $studentList")
     }
 
     private fun updateAdapterData(studentList: List<Student>) {
@@ -115,17 +124,13 @@ class StudentListFragment : Fragment() {
     private fun redirectToEditForm(studentEditId: String) {
         val action = StudentListFragmentDirections
             .actionStudentListFragmentToStudentFormFragment(studentEditId)
-        Log.i(TAG, "redirectToEditForm: $studentEditId")
         findNavController().navigate(action)
     }
 
-    override fun onPause() {
-        super.onPause()
-        studentViewModel.getRemoveStatus()
-    }
-
-    companion object {
-        private const val TAG = "StudentListFragment"
+    private fun redirectToLogin() {
+        val action = StudentListFragmentDirections
+            .actionStudentListFragmentToAuthFormFragment()
+        findNavController().navigate(action)
     }
 
 }

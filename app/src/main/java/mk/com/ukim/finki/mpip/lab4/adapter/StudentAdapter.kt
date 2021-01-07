@@ -18,11 +18,20 @@ class StudentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         binder = FragmentStudentItemBinding.inflate(inflater, parent, false)
-        return StudentViewHolder(binder, onEdit, onDelete)
+        return StudentViewHolder(binder)
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
         val currentStudent: Student = students[position]
+
+        binder.studentItemEditButton.setOnClickListener {
+            onEdit(currentStudent.studentId)
+        }
+
+        binder.studentItemRemoveButton.setOnClickListener {
+            onDelete(currentStudent.studentId)
+        }
+
         holder.bind(currentStudent)
     }
 
@@ -35,28 +44,9 @@ class StudentAdapter(
 
     inner class StudentViewHolder(
         private val studentItemBinding: FragmentStudentItemBinding,
-        private val onEdit: (String) -> (Unit),
-        private val onDelete: (String) -> (Unit),
     ) : RecyclerView.ViewHolder(studentItemBinding.root) {
 
-        private var currentStudentId: String? = null
-
-        init {
-            studentItemBinding.studentItemEditButton.setOnClickListener {
-                currentStudentId?.let {
-                    onEdit(it)
-                }
-            }
-
-            studentItemBinding.studentItemRemoveButton.setOnClickListener {
-                currentStudentId?.let {
-                    onDelete(it)
-                }
-            }
-        }
-
         fun bind(student: Student) {
-            currentStudentId = student.studentId
             studentItemBinding.studentItemId.text = student.studentId
             studentItemBinding.studentItemName.text = studentItemBinding.root.resources.getString(
                 R.string.student_item_name_text,

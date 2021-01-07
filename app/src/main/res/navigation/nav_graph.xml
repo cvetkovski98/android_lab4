@@ -9,16 +9,19 @@
         android:id="@+id/studentListFragment"
         android:name="mk.com.ukim.finki.mpip.lab4.view.StudentListFragment"
         android:label="fragment_student_list"
-        tools:layout="@layout/fragment_student_list" >
+        tools:layout="@layout/fragment_student_list">
         <action
             android:id="@+id/action_studentListFragment_to_studentFormFragment"
             app:destination="@id/studentFormFragment" />
+        <action
+            android:id="@+id/action_studentListFragment_to_authFormFragment"
+            app:destination="@id/authFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/studentFormFragment"
         android:name="mk.com.ukim.finki.mpip.lab4.view.StudentFormFragment"
         android:label="fragment_student_form"
-        tools:layout="@layout/fragment_student_form" >
+        tools:layout="@layout/fragment_student_form">
         <action
             android:id="@+id/action_studentFormFragment_to_authFormFragment"
             app:destination="@id/authFormFragment" />
@@ -31,5 +34,9 @@
         android:id="@+id/authFormFragment"
         android:name="mk.com.ukim.finki.mpip.lab4.view.AuthFormFragment"
         android:label="fragment_auth_form"
-        tools:layout="@layout/fragment_auth_form" />
+        tools:layout="@layout/fragment_auth_form" >
+        <action
+            android:id="@+id/action_authFormFragment_to_studentListFragment"
+            app:destination="@id/studentListFragment" />
+    </fragment>
 </navigation>

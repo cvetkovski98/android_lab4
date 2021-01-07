@@ -1,33 +1,98 @@
 package mk.com.ukim.finki.mpip.lab4.repository
 
-import android.content.Context
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
+import mk.com.ukim.finki.mpip.lab4.model.Credentials
+import mk.com.ukim.finki.mpip.lab4.model.Resource
 
-class AuthRepository(private val context: Context) {
+object AuthRepository {
 
-    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val mAuth: FirebaseAuth = Firebase.auth
 
-    fun signUp(email: String, password: String): Task<AuthResult> {
-        return mAuth.createUserWithEmailAndPassword(email, password)
+    fun currentUser(): Resource<FirebaseUser> {
+        lateinit var resource: Resource<FirebaseUser>
+        val user: FirebaseUser? = mAuth.currentUser
+        resource = if (user != null) {
+            Resource.success(user)
+        } else {
+            Resource.error(null, "No user signed in")
+        }
+
+        return resource
     }
 
-    fun signIn(email: String, password: String): Task<AuthResult> {
-        return mAuth.signInWithEmailAndPassword(email, password)
+
+    suspend fun signUp(credentials: Credentials): Resource<FirebaseUser> {
+        lateinit var resource: Resource<FirebaseUser>
+
+        val email = credentials.email
+        val password = credentials.password
+
+        if (email.isBlank() || password.isBlank()) {
+            return Resource.error(null, "Email or password is blank")
+        }
+
+        try {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    resource = currentUser()
+                }
+                .addOnFailureListener {
+                    it.message?.let { msg ->
+                        resource = Resource.error(null, msg)
+                    } ?: run {
+                        resource = Resource.error(null, "There was an error creating the user")
+                    }
+                }.await()
+        } catch (e: Exception) {
+            var message = e.message
+            if (message == null) {
+                message = "Error occurred"
+            }
+            resource = Resource.error(null, message)
+        }
+
+        return resource
+    }
+
+    suspend fun signIn(credentials: Credentials): Resource<FirebaseUser> {
+        lateinit var resource: Resource<FirebaseUser>
+
+        val email = credentials.email
+        val password = credentials.password
+
+        if (email.isBlank() || password.isBlank()) {
+            return Resource.error(null, "Email or password is blank")
+        }
+
+        try {
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    resource = currentUser()
+                }
+                .addOnFailureListener {
+                    it.message?.let { msg ->
+                        resource = Resource.error(null, msg)
+                    } ?: run {
+                        resource = Resource.error(null, "There was an error signing in")
+                    }
+                }.await()
+        } catch (e: Exception) {
+            var message = e.message
+            if (message == null) {
+                message = "Error occurred"
+            }
+            resource = Resource.error(null, message)
+        }
+        return resource
     }
 
     fun signOut() {
         return mAuth.signOut()
     }
 
-    companion object {
-        private var INSTANCE: AuthRepository? = null
-        fun getInstance(context: Context): AuthRepository =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: AuthRepository(context).also { INSTANCE = it }
-            }
 
-        private const val TAG = "AuthRepository"
-    }
 }
