@@ -27,6 +27,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     }
 
     fun signOutUser() {
+        _currentUser.value = Resource.loading(null)
         authRepository.signOut()
         _currentUser.postValue(
             Resource.error(null, "User signed out")
@@ -34,6 +35,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     }
 
     fun signUpUser(credentials: Credentials) {
+        _currentUser.value = Resource.loading(null)
         viewModelScope.launch(Dispatchers.IO) {
             val user = authRepository.signUp(credentials)
             _currentUser.postValue(
@@ -43,6 +45,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     }
 
     fun fetchCurrentUser() {
+        _currentUser.value = Resource.loading(null)
         viewModelScope.launch(Dispatchers.IO) {
             _currentUser.postValue(
                 authRepository.currentUser()

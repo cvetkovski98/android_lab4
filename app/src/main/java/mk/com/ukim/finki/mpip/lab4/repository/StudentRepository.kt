@@ -34,6 +34,8 @@ object StudentRepository {
                 offer(Resource.error(listOf<Student>(), error.message))
             }
         }
+        offer(Resource.loading(null))
+
         studentDb.addValueEventListener(listener)
 
         awaitClose()

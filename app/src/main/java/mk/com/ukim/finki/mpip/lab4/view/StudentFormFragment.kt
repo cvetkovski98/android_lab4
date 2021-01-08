@@ -52,6 +52,7 @@ class StudentFormFragment : Fragment() {
                 }
             }
         } ?: run {
+            binding.detailsProgress.visibility = View.INVISIBLE
             binding.createUserButton.setOnClickListener {
                 val studentData = toStudent()
                 if (studentData == null) {
@@ -66,9 +67,16 @@ class StudentFormFragment : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     fillForm(it.data)
+                    binding.detailsProgress.visibility = View.INVISIBLE
                 }
 
-                else -> { // do nothing
+                Status.ERROR -> {
+                    // do nothing
+                    binding.detailsProgress.visibility = View.INVISIBLE
+                }
+
+                Status.LOADING -> {
+                    binding.detailsProgress.visibility = View.VISIBLE
                 }
             }
         })

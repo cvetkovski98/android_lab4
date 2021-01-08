@@ -50,31 +50,39 @@ class StudentListFragment : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> it.data?.let { data ->
                     updateAdapterData(data)
+                    binding.listProgress.visibility = View.INVISIBLE
                 }
 
-                Status.ERROR -> Toast.makeText(
-                    context,
-                    it.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                Status.LOADING -> { // do nothing
-                }
-            }
-        })
-
-        studentViewModel.studentRemoveStatus.observe(viewLifecycleOwner, {
-            when (it.status) {
                 Status.ERROR -> {
                     Toast.makeText(
                         context,
                         it.message,
                         Toast.LENGTH_SHORT
                     ).show()
-                }
 
-                else -> {
-                    // do nothing
+                    binding.listProgress.visibility = View.INVISIBLE
+                }
+                Status.LOADING -> {
+                    binding.listProgress.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        studentViewModel.studentRemoveStatus.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> binding.listProgress.visibility = View.INVISIBLE
+
+                Status.ERROR -> {
+                    Toast.makeText(
+                        context,
+                        it.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    binding.listProgress.visibility = View.INVISIBLE
+                }
+                Status.LOADING -> {
+                    binding.listProgress.visibility = View.VISIBLE
                 }
             }
         })

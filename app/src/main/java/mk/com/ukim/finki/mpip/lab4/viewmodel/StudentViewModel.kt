@@ -58,6 +58,7 @@ class StudentViewModel(private val studentRepository: StudentRepository) : ViewM
     }
 
     fun fetchStudentDetails(studentId: String) {
+        _studentDetails.value = Resource.loading(null)
         viewModelScope.launch(Dispatchers.IO) {
             _studentDetails.postValue(
                 studentRepository.fetchStudentDetails(studentId)
